@@ -1,7 +1,29 @@
-export type Resolver = (name: string, locals: Record<string, any>) => Promise<any>;
+export const IDENTITY = '$';
+
+export interface Locals {
+  [IDENTITY]?: Container;
+  [K: string]: any;
+}
+
+export type Resolver = (name: string, locals: Locals) => Promise<any>;
 
 export class Container {
   private static readonly stack: Resolver[] = [];
+
+  // Implement singleton container
+  public static create = (locals: Locals): Container => {
+    let { [IDENTITY]: instance } = locals;
+
+    if (instance instanceof Container) {
+      return instance;
+    }
+
+    instance = new Container(locals);
+
+    instance.store(IDENTITY, instance);
+
+    return instance;
+  };
 
   public static readonly push = (resolver: Resolver): void => {
     Container.stack.unshift(resolver);
@@ -10,7 +32,7 @@ export class Container {
   public static readonly pop = (resolver: Resolver): void => {
     const index = Container.stack.indexOf(resolver);
 
-    switch(index) {
+    switch (index) {
       case -1:
         break;
       case 0:
@@ -22,11 +44,15 @@ export class Container {
     }
   };
 
-  public constructor(public locals: Record<string, any>) {
-    this.store('$', this);
+  private constructor(public locals: Locals) {
   }
 
   public readonly resolve = async (name: string): Promise<any> => {
+    // identity resolution
+    if (name === IDENTITY) {
+      return this;
+    }
+
     // default resolution
     let { [name]: result } = this.locals;
 
@@ -45,6 +71,10 @@ export class Container {
   };
 
   public readonly store = (name: string, value: any): void => {
+    if (name === IDENTITY) {
+      throw new Error(`${IDENTITY} is a reserved variable`);
+    }
+
     this.locals[name] = value;
   };
 }
