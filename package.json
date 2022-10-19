@@ -1,0 +1,24 @@
+{
+  "name": "@specfocus/spec-focus.ioc",
+  "version": "1.0.0",
+  "description": "Simple dependency injection container",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/specfocus/spec-focus.ioc.git"
+  },
+  "keywords": [
+    "IoC",
+    "Dependency",
+    "Injection"
+  ],
+  "author": "Lucas Oromi <lucas@specfocus.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/specfocus/spec-focus.ioc/issues"
+  },
+  "homepage": "https://github.com/specfocus/spec-focus.ioc#readme"
+}
