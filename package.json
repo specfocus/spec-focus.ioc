@@ -1,10 +1,14 @@
 {
   "name": "@specfocus/spec-focus.ioc",
   "version": "1.0.0",
-  "description": "Simple dependency injection container",
+  "description": "Simple dependency injection (IoC) container",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "build": "tsc",
+    "exjest": "yarn node --experimental-vm-modules $(yarn bin jest)",
+    "test": "yarn exjest --coverage",
+    "test:watch": "yarn exjest --watch"
   },
   "repository": {
     "type": "git",
@@ -20,5 +24,11 @@
   "bugs": {
     "url": "https://github.com/specfocus/spec-focus.ioc/issues"
   },
-  "homepage": "https://github.com/specfocus/spec-focus.ioc#readme"
+  "homepage": "https://github.com/specfocus/spec-focus.ioc#readme",
+  "devDependencies": {
+    "jest": "^29.2.1",
+    "ts-jest": "^29.0.3",
+    "tslint": "^6.1.3",
+    "typescript": "^4.8.4"
+  }
 }

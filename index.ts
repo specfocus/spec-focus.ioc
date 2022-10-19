@@ -1,6 +1,6 @@
 export type Resolver = (name: string, locals: Record<string, any>) => Promise<any>;
 
-class Container {
+export class Container {
   private static readonly stack: Resolver[] = [];
 
   public static readonly push = (resolver: Resolver): void => {
@@ -27,23 +27,24 @@ class Container {
   }
 
   public readonly resolve = async (name: string): Promise<any> => {
-    let value: any;
+    // default resolution
+    let { [name]: result } = this.locals;
 
+    // go though resolver stack
     for (const fn of Container.stack) {
-      value = await fn(name, this.locals);
+      const value = await fn(name, this.locals);
+
       if (typeof value !== 'undefined') {
-        return value;
+        // complete with custom resolution
+        result = value;
+        break;
       }
     }
 
-    const { [name]: singleton } = this.locals;
-
-    return singleton;
+    return result;
   };
 
-  public readonly store = (name: string, singleton: any): void => {
-    this.locals[name] = singleton;
+  public readonly store = (name: string, value: any): void => {
+    this.locals[name] = value;
   };
 }
-
-export default Container;
